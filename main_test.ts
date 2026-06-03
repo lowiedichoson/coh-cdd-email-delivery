@@ -1,11 +1,10 @@
 import { assertEquals, assertThrows } from "@std/assert";
+import { buildConfig, requireEnv } from "./config.ts";
 import {
-  buildConfig,
   createPool,
   getCashDeliveryDepositData,
   getCashOnHandData,
-  requireEnv,
-} from "./main.ts";
+} from "./db.ts";
 
 /**
  * Snapshot a set of env vars, run a body with overrides applied, then restore
