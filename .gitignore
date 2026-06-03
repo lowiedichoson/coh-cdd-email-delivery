@@ -14,5 +14,5 @@
 
 # End of https://www.toptal.com/developers/gitignore/api/deno
 
-*.json
-*.csv
+logs/*.json
+reports/*.csv

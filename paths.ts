@@ -39,3 +39,14 @@ export function dateStamp(d = new Date()): string {
   const day = String(d.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 }
+
+/**
+ * Returns the report "as of" date: the previous calendar day, formatted as
+ * YYYY-MM-DD. The reports are prior-day ending balances, so this is the date
+ * used in CSV filenames and email subjects/bodies.
+ */
+export function reportDateStamp(now = new Date()): string {
+  const d = new Date(now);
+  d.setDate(d.getDate() - 1);
+  return dateStamp(d);
+}

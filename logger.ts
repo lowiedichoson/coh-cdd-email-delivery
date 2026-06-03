@@ -88,21 +88,24 @@ export interface RunSummary {
   cohRows: number;
   cddRows: number;
   filesWritten: number;
+  emailsSent: number;
   logPath: string;
 }
 
-/** Prints a one-glance recap of the run: duration, row counts, files, status. */
+/** Prints a one-glance recap of the run: duration, counts, files, emails, status. */
 export function printSummary(s: RunSummary): void {
   const elapsed = ((Date.now() - new Date(s.startedAt).getTime()) / 1000)
     .toFixed(1);
   const status = s.exitCode === 0 ? chalk.green("OK") : chalk.red("FAILED");
   const files = `${s.filesWritten} file${s.filesWritten === 1 ? "" : "s"}`;
+  const emails = `${s.emailsSent} email${s.emailsSent === 1 ? "" : "s"}`;
+  const bar = chalk.gray("|");
 
   console.log(chalk.gray("-".repeat(60)));
   console.log(
-    `  Done in ${chalk.cyan(`${elapsed}s`)}  ${chalk.gray("|")}  ` +
-      `COH ${chalk.cyan(s.cohRows)}  CDD ${chalk.cyan(s.cddRows)}  ` +
-      `${chalk.gray("|")}  ${files}  ${chalk.gray("|")}  ${status}`,
+    `  Done in ${chalk.cyan(`${elapsed}s`)}  ${bar}  ` +
+      `COH ${chalk.cyan(s.cohRows)}  CDD ${chalk.cyan(s.cddRows)}  ${bar}  ` +
+      `${files}  ${bar}  ${emails}  ${bar}  ${status}`,
   );
   console.log(chalk.gray(`  logs -> ${s.logPath}`));
 }
