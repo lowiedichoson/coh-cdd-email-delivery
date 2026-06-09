@@ -50,3 +50,9 @@ export function reportDateStamp(now = new Date()): string {
   d.setDate(d.getDate() - 1);
   return dateStamp(d);
 }
+
+/** Reformats a YYYY-MM-DD stamp as MM/DD/YYYY for display in report titles. */
+export function displayDate(stamp: string): string {
+  const [year, month, day] = stamp.split("-");
+  return `${month}/${day}/${year}`;
+}

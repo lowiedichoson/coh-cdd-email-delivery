@@ -1,6 +1,11 @@
 import type sql from "mssql";
 import { join } from "@std/path";
-import { dateStamp, reportDateStamp, resolveDir } from "./paths.ts";
+import {
+  dateStamp,
+  displayDate,
+  reportDateStamp,
+  resolveDir,
+} from "./paths.ts";
 import { logger, printSummary, writeLogs } from "./logger.ts";
 import { loadEnv } from "./config.ts";
 import {
@@ -40,7 +45,9 @@ if (import.meta.main) {
     cohRows = coh?.length ?? 0;
     cddRows = cdd?.length ?? 0;
 
-    const cohCsv = convertToCsv(coh);
+    const cohCsv = convertToCsv(coh, {
+      title: `Ending Balance As of ${displayDate(reportDate)}`,
+    });
     const cddCsv = convertToCsv(cdd);
 
     if (cohCsv || cddCsv) {

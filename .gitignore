@@ -18,3 +18,4 @@ logs/*.json
 reports/*.csv
 
 *.exe
+*.zip
