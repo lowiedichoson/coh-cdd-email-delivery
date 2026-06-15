@@ -1,5 +1,3 @@
-import type sql from "mssql";
-
 export type LogLevel = "info" | "success" | "warn" | "error";
 
 export interface LogEntry {
@@ -29,6 +27,14 @@ export interface CashDeliveryDeposit {
   depositUSD: number;
 }
 
+export interface CashDeliveryDepositPerBank {
+  bankCode: string;
+  deliveryPHP: number;
+  deliveryUSD: number;
+  depositPHP: number;
+  depositUSD: number;
+}
+
 export interface WorkbookConfig {
   filePath: string;
   sheets: SheetConfig[];
@@ -37,5 +43,7 @@ export interface WorkbookConfig {
 export interface SheetConfig {
   tabName: string;
   title: string;
-  recordset: sql.IRecordSet<Record<string, unknown>> | undefined;
+  data: CashOnHand[] | CashDeliveryDeposit[] | CashDeliveryDepositPerBank[] | undefined;
+  /** 0-based column indices whose values should be summed in a "Total" row. */
+  totalColumns?: number[];
 }

@@ -11,11 +11,13 @@ import { loadEnv } from "./config.ts";
 import {
   createPool,
   getCashDeliveryDepositData,
+  getCashDeliveryDepositPerBankData,
   getCashOnHandData,
   testConnection,
-} from "./db.ts";
-import { convertToCsv } from "./csv.ts";
+} from "./db-inline.ts";
 import { sendReportEmail } from "./mailer.ts";
+import { generateWorkbook } from "./report.ts";
+import { CashDeliveryDeposit, CashDeliveryDepositPerBank, CashOnHand } from "./types.ts";
 
 if (import.meta.main) {
   const startedAt = new Date().toISOString();
@@ -26,6 +28,7 @@ if (import.meta.main) {
   let exitCode = 0;
   let cohRows = 0;
   let cddRows = 0;
+  let cddPerBankRows = 0;
   let filesWritten = 0;
   let emailsSent = 0;
 
@@ -40,40 +43,64 @@ if (import.meta.main) {
 
     await testConnection(pool);
 
-    const coh = await getCashOnHandData(pool);
-    const cdd = await getCashDeliveryDepositData(pool);
+    const coh: CashOnHand[] | undefined = await getCashOnHandData(pool);
+    const cdd: CashDeliveryDeposit[] | undefined = await getCashDeliveryDepositData(pool);
+    const cddPerBank: CashDeliveryDepositPerBank[] | undefined = await getCashDeliveryDepositPerBankData(pool);
     cohRows = coh?.length ?? 0;
     cddRows = cdd?.length ?? 0;
+    cddPerBankRows = cddPerBank?.length ?? 0;
 
-    const cohCsv = convertToCsv(coh, {
-      title: `Ending Balance As of ${displayDate(reportDate)}`,
-    });
-    const cddCsv = convertToCsv(cdd);
-
-    if (cohCsv || cddCsv) {
+    if (coh || cdd || cddPerBank) {
       await Deno.mkdir(reportsDir, { recursive: true });
     }
 
-    if (cohCsv) {
-      const cohPath = join(reportsDir, `COH Ending Balance(${reportDate}).csv`);
-      await Deno.writeTextFile(cohPath, cohCsv);
+    if (coh) {
+      const cohPath = join(
+        reportsDir,
+        `COH Ending Balance(${reportDate}).xslx`,
+      );
+      await generateWorkbook({
+        filePath: cohPath,
+        sheets: [{
+          tabName: "COH Ending Balance",
+          title: `Ending Balance As of ${displayDate(reportDate)}`,
+          data: coh,
+          totalColumns: [1, 2],
+        }],
+      });
+
       filesWritten++;
-      logger.success(`Cash on Hand report saved to ${cohPath}`);
       await sendReportEmail("COH", reportDate, cohPath);
       emailsSent++;
     }
 
-    if (cddCsv) {
-      const cddPath = join(reportsDir, `CDD Balance(${reportDate}).csv`);
-      await Deno.writeTextFile(cddPath, cddCsv);
+    if (cdd || cddPerBank) {
+      const cddPath = join(reportsDir, `CDD Balance(${reportDate}).xlsx`);
+      await generateWorkbook({
+        filePath: cddPath,
+        sheets: [
+          { 
+            tabName: "CDD Ending Balance",
+            title: `CDD Balance As of ${displayDate(reportDate)}`, 
+            data: cdd,
+            totalColumns: [1, 2, 3, 4]
+          },
+          { 
+            tabName: "CDD Balance Per Bank",
+            title: `CDD Balance Per Bank As of ${displayDate(reportDate)}`,
+            data: cddPerBank,
+            totalColumns: [1, 2, 3, 4]
+          },
+        ],
+      });
       filesWritten++;
-      logger.success(`Cash Delivery Deposit report saved to ${cddPath}`);
       await sendReportEmail("CDD", reportDate, cddPath);
       emailsSent++;
     }
 
     logger.info(`Fetched: COH = ${cohRows}`);
     logger.info(`Fetched: CDD = ${cddRows}`);
+    logger.info(`Fetched: CDD Per Bank = ${cddPerBankRows}`);
   } catch (err) {
     logger.error(err instanceof Error ? err.stack ?? err.message : String(err));
     exitCode = 1;
@@ -86,6 +113,7 @@ if (import.meta.main) {
       exitCode,
       cohRows,
       cddRows,
+      cddPerBankRows,
       filesWritten,
       emailsSent,
       logPath,

@@ -38,9 +38,10 @@ export function buildConfig(): sql.config {
     password: requireEnv("DB_PASSWORD"),
     database: requireEnv("DB_NAME"),
     options: {
+      database: requireEnv("DB_NAME"),
       encrypt: Deno.env.get("DB_ENCRYPT") === "true",
       trustServerCertificate: true,
     },
-    connectionTimeout: 10_000,
+    connectionTimeout: 60_000,
   };
 }

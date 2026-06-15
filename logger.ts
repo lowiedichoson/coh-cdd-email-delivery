@@ -87,6 +87,7 @@ export interface RunSummary {
   exitCode: number;
   cohRows: number;
   cddRows: number;
+  cddPerBankRows: number;
   filesWritten: number;
   emailsSent: number;
   logPath: string;
@@ -104,7 +105,7 @@ export function printSummary(s: RunSummary): void {
   console.log(chalk.gray("-".repeat(60)));
   console.log(
     `  Done in ${chalk.cyan(`${elapsed}s`)}  ${bar}  ` +
-      `COH ${chalk.cyan(s.cohRows)}  CDD ${chalk.cyan(s.cddRows)}  ${bar}  ` +
+      `COH ${chalk.cyan(s.cohRows)}  CDD ${chalk.cyan(s.cddRows)}  CDD-B ${chalk.cyan(s.cddPerBankRows)}  ${bar}  ` +
       `${files}  ${bar}  ${emails}  ${bar}  ${status}`,
   );
   console.log(chalk.gray(`  logs -> ${s.logPath}`));

@@ -1,27 +1,67 @@
 import * as XLSX from 'xlsx';
 import { logger } from "./logger.ts";
-import { SheetConfig, WorkbookConfig } from "./types.ts";
+import {
+    CashDeliveryDeposit,
+    CashDeliveryDepositPerBank,
+    CashOnHand,
+    SheetConfig,
+    WorkbookConfig,
+} from "./types.ts";
+
+const COLUMN_LABELS: Record<string, string> = {
+    branchName: "Branch Name",
+    bankCode: "Bank Code",
+    cashOnHandPHP: "COH PHP",
+    cashOnHandUSD: "COH USD",
+    deliveryPHP: "Delivery PHP",
+    deliveryUSD: "Delivery USD",
+    depositPHP: "Deposit PHP",
+    depositUSD: "Deposit USD",
+};
+
+function getColumns(row: CashOnHand | CashDeliveryDeposit | CashDeliveryDepositPerBank): string[] {
+    return Object.keys(row).filter((k) => k in COLUMN_LABELS);
+}
 
 function buildSheetRows(config: SheetConfig): unknown[][] | null {
-    const { recordset, title } = config;
+    const { data, title } = config;
 
-    if (!recordset || recordset.length === 0){
+    if (!data || data.length === 0) {
         return null;
     }
 
-    const columns = Object.keys(recordset[0]);
+    const columns = getColumns(data[0]);
     const rows: unknown[][] = [];
 
     if (title) {
-        rows.push([title]);
+        const titleRow: unknown[] = [title];
+        for (let i = 1; i < columns.length; i++) {
+            titleRow.push("");
+        }
+        rows.push(titleRow);
     }
 
-    rows.push(columns);
+    rows.push(columns.map((col) => COLUMN_LABELS[col]));
 
-    for (const record of recordset) {
-        rows.push(columns.map(col => record[col]));
+    for (const row of data) {
+        rows.push(columns.map((col) => (row as unknown as Record<string, unknown>)[col]));
     }
 
+    if (config.totalColumns && config.totalColumns.length > 0) {
+        const totalRow: unknown[] = new Array(columns.length).fill("");
+        totalRow[0] = "Total";
+
+        for (const colIdx of config.totalColumns) {
+            const key = columns[colIdx];
+            const sum = (data as unknown as Record<string, unknown>[]).reduce(
+                (acc: number, record) => acc + (Number(record[key]) || 0),
+                0,
+            );
+            totalRow[colIdx] = sum;
+        }
+
+        rows.push(totalRow);
+    }
     return rows;
 }
 
@@ -51,4 +91,6 @@ export async function generateWorkbook(config: WorkbookConfig): Promise<void> {
     const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' });
     await Deno.writeFile(config.filePath, buffer);
     logger.success(`Workbook generated at ${config.filePath} with ${sheetCount} sheets`);
+
+    return;
 }
