@@ -42,7 +42,7 @@ export async function testConnection(pool: sql.ConnectionPool): Promise<void> {
 export async function getCashOnHandData(
   pool: sql.ConnectionPool,
 ): Promise<sql.IRecordSet<Record<string, unknown>> | undefined> {
-  const sp = "GetCOHEndingBalance";
+  const sp = "spGetCOHEndingBalance";
   logger.info("Retrieving Cash on Hand data from the database...");
 
   const result = await pool.request().execute<Record<string, unknown>>(sp);
@@ -60,7 +60,7 @@ export async function getCashOnHandData(
 export async function getCashDeliveryDepositData(
   pool: sql.ConnectionPool,
 ): Promise<sql.IRecordSet<Record<string, unknown>> | undefined> {
-  const sp = "GetCDDBalance";
+  const sp = "spGetCDDBalance";
   logger.info("Retrieving Cash Delivery Deposit data from the database...");
 
   const result = await pool.request().execute<Record<string, unknown>>(sp);

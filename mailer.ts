@@ -48,7 +48,7 @@ function buildMessage(code: ReportCode, date: string): {
   text: string;
 } {
   return {
-    subject: `${code} ${date}`,
+    subject: `[TEST] - ${code} ${date}`,
     text: `Note: This is a notification email from Eterminal, please do not reply.` +
       `\n\n \n\nPlease see ${code} as of ${date}.`,
   };
