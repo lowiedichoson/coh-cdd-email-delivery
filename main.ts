@@ -14,7 +14,7 @@ import {
   getCashDeliveryDepositPerBankData,
   getCashOnHandData,
   testConnection,
-} from "./db-inline.ts";
+} from "./db.ts";
 import { sendReportEmail } from "./mailer.ts";
 import { generateWorkbook } from "./report.ts";
 import { CashDeliveryDeposit, CashDeliveryDepositPerBank, CashOnHand } from "./types.ts";
@@ -57,7 +57,7 @@ if (import.meta.main) {
     if (coh) {
       const cohPath = join(
         reportsDir,
-        `COH Ending Balance(${reportDate}).xslx`,
+        `COH Ending Balance(${reportDate}).xlsx`,
       );
       await generateWorkbook({
         filePath: cohPath,

@@ -16,6 +16,7 @@
 
 logs/*.json
 reports/*.csv
+reports/*.xlsx
 
 *.exe
 *.zip
