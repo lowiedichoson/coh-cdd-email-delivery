@@ -4,7 +4,6 @@ import {
   dateStamp,
   displayDate,
   parseCliArgs,
-  reportDateStamp,
   resolveDir,
 } from "./paths.ts";
 import { logger, printSummary, writeLogs } from "./logger.ts";
@@ -34,7 +33,7 @@ async function processDay(
 ): Promise<DayResult> {
   const reportDate = transactionDate
     ? dateStamp(transactionDate)
-    : reportDateStamp();
+    : dateStamp(); // default: today — the SP defaults to CAST(GETDATE() AS DATE)
   const result: DayResult = {
     date: reportDate,
     success: true,
