@@ -1,6 +1,6 @@
 import chalk from "chalk";
 import { join } from "@std/path";
-import type { LogEntry, LogLevel, LogRun } from "./types.ts";
+import type { DayResult, LogEntry, LogLevel, LogRun } from "./types.ts";
 
 /** Steps captured during the current run, flushed to disk by `writeLogs`. */
 export const logEntries: LogEntry[] = [];
@@ -91,6 +91,10 @@ export interface RunSummary {
   filesWritten: number;
   emailsSent: number;
   logPath: string;
+  /** Per-day breakdown when processing a date range (empty for default / single-day runs). */
+  dayResults: DayResult[];
+  daysTotal: number;
+  daysSucceeded: number;
 }
 
 /** Prints a one-glance recap of the run: duration, counts, files, emails, status. */
@@ -103,10 +107,36 @@ export function printSummary(s: RunSummary): void {
   const bar = chalk.gray("|");
 
   console.log(chalk.gray("-".repeat(60)));
-  console.log(
-    `  Done in ${chalk.cyan(`${elapsed}s`)}  ${bar}  ` +
-      `COH ${chalk.cyan(s.cohRows)}  CDD ${chalk.cyan(s.cddRows)}  CDD-B ${chalk.cyan(s.cddPerBankRows)}  ${bar}  ` +
-      `${files}  ${bar}  ${emails}  ${bar}  ${status}`,
-  );
-  console.log(chalk.gray(`  logs -> ${s.logPath}`));
+
+  // Multi-day header
+  if (s.dayResults.length > 0) {
+    const daysTag =
+      s.daysSucceeded === s.daysTotal
+        ? chalk.green(`${s.daysSucceeded}/${s.daysTotal}`)
+        : chalk.red(`${s.daysSucceeded}/${s.daysTotal}`);
+    console.log(
+      `  Days: ${daysTag} succeeded  ${bar}  ` +
+        `COH ${chalk.cyan(s.cohRows)}  CDD ${chalk.cyan(s.cddRows)}  CDD-B ${chalk.cyan(s.cddPerBankRows)}  ${bar}  ` +
+        `${files}  ${bar}  ${emails}`,
+    );
+  } else {
+    console.log(
+      `  Done in ${chalk.cyan(`${elapsed}s`)}  ${bar}  ` +
+        `COH ${chalk.cyan(s.cohRows)}  CDD ${chalk.cyan(s.cddRows)}  CDD-B ${chalk.cyan(s.cddPerBankRows)}  ${bar}  ` +
+        `${files}  ${bar}  ${emails}`,
+    );
+  }
+
+  // Per-day details (only when there are failures, or always for multi-day)
+  if (s.dayResults.length > 0) {
+    for (const day of s.dayResults) {
+      const icon = day.success ? chalk.green("✓") : chalk.red("✗");
+      const detail = day.success
+        ? `COH ${day.cohRows}  CDD ${day.cddRows}  CDD-B ${day.cddPerBankRows}`
+        : (day.error ?? "unknown error");
+      console.log(`    ${icon} ${day.date}  ${chalk.gray(detail)}`);
+    }
+  }
+
+  console.log(`  ${status}  ${bar}  ${chalk.gray(`logs -> ${s.logPath}`)}`);
 }

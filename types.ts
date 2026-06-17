@@ -47,3 +47,15 @@ export interface SheetConfig {
   /** 0-based column indices whose values should be summed in a "Total" row. */
   totalColumns?: number[];
 }
+
+/** Per-day result when processing a date range. */
+export interface DayResult {
+  date: string; // YYYY-MM-DD
+  success: boolean;
+  error?: string;
+  cohRows: number;
+  cddRows: number;
+  cddPerBankRows: number;
+  filesWritten: number;
+  emailsSent: number;
+}
