@@ -31,6 +31,18 @@ function yesterday(): Date {
   return d;
 }
 
+/**
+ * Formats a Date as a YYYY-MM-DD string (local time). Used for passing
+ * date parameters to SQL Server as NVARCHAR to avoid the timezone shift
+ * that sql.Date / sql.DateTime both introduce (they use UTC getters).
+ */
+function formatDate(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
 // ---------------------------------------------------------------------------
 // Pool management (identical to db.ts)
 // ---------------------------------------------------------------------------
@@ -155,7 +167,7 @@ ORDER BY [Branch Name];
 `;
 
   const result = await pool.request()
-    .input("TransactionDate", sql.Date, txDate)
+    .input("TransactionDate", sql.NVarChar, formatDate(txDate))
     .query<Record<string, unknown>>(sqlQuery);
 
   if (result.recordset.length === 0) {
@@ -274,7 +286,7 @@ ORDER BY [Branch Name];
 `;
 
   const result = await pool.request()
-    .input("TransactionDate", sql.Date, txDate)
+    .input("TransactionDate", sql.NVarChar, formatDate(txDate))
     .query<Record<string, unknown>>(sqlQuery);
 
   if (result.recordset.length === 0) {
@@ -383,7 +395,7 @@ GROUP BY SUBSTRING([Bank Code], 2, 3);
 `;
 
   const result = await pool.request()
-    .input("TransactionDate", sql.Date, txDate)
+    .input("TransactionDate", sql.NVarChar, formatDate(txDate))
     .query<Record<string, unknown>>(sqlQuery);
 
   if (result.recordset.length === 0) {

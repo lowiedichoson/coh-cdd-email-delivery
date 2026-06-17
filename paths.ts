@@ -56,3 +56,34 @@ export function displayDate(stamp: string): string {
   const [year, month, day] = stamp.split("-");
   return `${month}/${day}/${year}`;
 }
+
+/**
+ * Parses an optional transaction date from CLI arguments.
+ * Supports `-d <date>` or `--date <date>` where date is YYYY-MM-DD.
+ * Returns the parsed Date (midnight, local) or undefined if no flag was given.
+ * Throws on malformed input.
+ */
+export function parseCliDate(): Date | undefined {
+  const args = Deno.args;
+  for (let i = 0; i < args.length; i++) {
+    if ((args[i] === "-d" || args[i] === "--date") && i + 1 < args.length) {
+      const raw = args[i + 1];
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+        throw new Error(
+          `Invalid date format: "${raw}". Expected YYYY-MM-DD (e.g. 2026-06-14).`,
+        );
+      }
+      const [year, month, day] = raw.split("-").map(Number);
+      const d = new Date(year, month - 1, day);
+      if (
+        d.getFullYear() !== year ||
+        d.getMonth() !== month - 1 ||
+        d.getDate() !== day
+      ) {
+        throw new Error(`Invalid date: "${raw}" is not a real calendar date.`);
+      }
+      return d;
+    }
+  }
+  return undefined;
+}

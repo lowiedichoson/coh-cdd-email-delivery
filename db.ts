@@ -42,11 +42,23 @@ export async function testConnection(pool: sql.ConnectionPool): Promise<void> {
 
 export async function getCashOnHandData(
   pool: sql.ConnectionPool,
+  transactionDate?: Date,
 ): Promise<CashOnHand[] | undefined> {
   const sp = "spGetCOHEndingBalance";
   logger.info("Retrieving Cash on Hand data from the database...");
 
-  const result = await pool.request().execute<Record<string, unknown>>(sp);
+  const req = pool.request();
+  if (transactionDate) {
+    // Pass as NVARCHAR to avoid timezone shift from sql.DateTime.
+    // The mssql driver constructs DATETIME from UTC getters, so a local
+    // midnight Date in UTC+8 becomes 4 PM the previous day in UTC,
+    // causing the stored procedure's date comparisons to miss.
+    const y = transactionDate.getFullYear();
+    const m = String(transactionDate.getMonth() + 1).padStart(2, "0");
+    const d = String(transactionDate.getDate()).padStart(2, "0");
+    req.input("TransactionDate", sql.NVarChar, `${y}-${m}-${d}`);
+  }
+  const result = await req.execute<Record<string, unknown>>(sp);
   if (result.recordset.length === 0) {
     logger.warn("No Cash on Hand data returned from the database.");
     return;
@@ -66,11 +78,20 @@ export async function getCashOnHandData(
 
 export async function getCashDeliveryDepositData(
   pool: sql.ConnectionPool,
+  transactionDate?: Date,
 ): Promise<CashDeliveryDeposit[] | undefined> {
   const sp = "spGetCDDBalance";
   logger.info("Retrieving Cash Delivery Deposit data from the database...");
 
-  const result = await pool.request().execute<Record<string, unknown>>(sp);
+  const req = pool.request();
+  if (transactionDate) {
+    // Pass as NVARCHAR to avoid timezone shift from sql.DateTime.
+    const y = transactionDate.getFullYear();
+    const m = String(transactionDate.getMonth() + 1).padStart(2, "0");
+    const d = String(transactionDate.getDate()).padStart(2, "0");
+    req.input("TransactionDate", sql.NVarChar, `${y}-${m}-${d}`);
+  }
+  const result = await req.execute<Record<string, unknown>>(sp);
 
   if (result.recordset.length === 0) {
     logger.warn("No Cash Delivery Deposit data returned from the database.");
@@ -93,13 +114,23 @@ export async function getCashDeliveryDepositData(
 
 export async function getCashDeliveryDepositPerBankData(
   pool: sql.ConnectionPool,
+  transactionDate?: Date,
 ): Promise<CashDeliveryDepositPerBank[] | undefined> {
   const sp = "spGetCDDBalancePerBank";
   logger.info(
     "Retrieving Cash Delivery Deposit Per Bank data from the database...",
   );
 
-  const result = await pool.request().execute<Record<string, unknown>>(sp);
+  const req = pool.request();
+  if (transactionDate) {
+    // Pass as NVARCHAR to avoid timezone shift from sql.DateTime.
+    const y = transactionDate.getFullYear();
+    const m = String(transactionDate.getMonth() + 1).padStart(2, "0");
+    const d = String(transactionDate.getDate()).padStart(2, "0");
+    req.input("TransactionDate", sql.NVarChar, `${y}-${m}-${d}`);
+  }
+  const result = await req.execute<Record<string, unknown>>(sp);
+
   if (result.recordset.length === 0) {
     logger.warn(
       "No Cash Delivery Deposit Per Bank data returned from the database.",

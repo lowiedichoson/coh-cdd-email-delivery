@@ -3,6 +3,7 @@ import { join } from "@std/path";
 import {
   dateStamp,
   displayDate,
+  parseCliDate,
   reportDateStamp,
   resolveDir,
 } from "./paths.ts";
@@ -22,7 +23,11 @@ import { CashDeliveryDeposit, CashDeliveryDepositPerBank, CashOnHand } from "./t
 if (import.meta.main) {
   const startedAt = new Date().toISOString();
   const today = dateStamp(); // run date — used for the log filename
-  const reportDate = reportDateStamp(); // prior day — used for reports + emails
+
+  // Accept optional --date / -d flag to override the transaction date.
+  // When omitted the stored procedures default to yesterday internally.
+  const cliDate = parseCliDate();
+  const reportDate = cliDate ? dateStamp(cliDate) : reportDateStamp();
   let logDir = resolveDir("LOG_DIR", "logs");
   let pool: sql.ConnectionPool | undefined;
   let exitCode = 0;
@@ -43,9 +48,9 @@ if (import.meta.main) {
 
     await testConnection(pool);
 
-    const coh: CashOnHand[] | undefined = await getCashOnHandData(pool);
-    const cdd: CashDeliveryDeposit[] | undefined = await getCashDeliveryDepositData(pool);
-    const cddPerBank: CashDeliveryDepositPerBank[] | undefined = await getCashDeliveryDepositPerBankData(pool);
+    const coh: CashOnHand[] | undefined = await getCashOnHandData(pool, cliDate);
+    const cdd: CashDeliveryDeposit[] | undefined = await getCashDeliveryDepositData(pool, cliDate);
+    const cddPerBank: CashDeliveryDepositPerBank[] | undefined = await getCashDeliveryDepositPerBankData(pool, cliDate);
     cohRows = coh?.length ?? 0;
     cddRows = cdd?.length ?? 0;
     cddPerBankRows = cddPerBank?.length ?? 0;
