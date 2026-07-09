@@ -34,8 +34,9 @@ It is designed to run non-interactively, usually from Windows Task Scheduler or 
 - Interactive prompts
 - Scheduling logic
 - Deduplication or retry orchestration
-- Recipient lookup from the database
 
 ## Important implementation note
 
-The current code reads email recipients from environment variables, not from the database. If that changes later, update this overview and [Email Delivery](./email-delivery.md) together.
+Email recipients are looked up from the database via the `spGetEmailRecipients`
+stored procedure (one call per report, keyed by `NotificationModule`), not from
+environment variables. See [Email Delivery](./email-delivery.md) for details.

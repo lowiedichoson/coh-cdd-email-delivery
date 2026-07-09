@@ -20,16 +20,21 @@ Rules:
 
 ## Recipients
 
-Recipients are read from indexed environment variables.
+Recipients come from the database, not from environment variables. The
+`spGetEmailRecipients` stored procedure is called via `getRecipients` in
+[db.ts](../db.ts), once per report using the `NotificationModule` parameter:
 
-- TO list: `SMTP_RECIPIENTS_0`, `SMTP_RECIPIENTS_1`, ...
-- CC list: `SMTP_CC_RECIPIENTS_0`, `SMTP_CC_RECIPIENTS_1`, ...
+- COH report: `NotificationModule = "COH Report"`
+- CDD report: `NotificationModule = "CDD Report"`
+
+Each active row returns `EmailTo`, `EmailCC`, and `EmailBCC`, where each value is
+a semicolon-separated (`;`) list of email addresses.
 
 Notes:
 
-- Empty values are ignored.
-- Gaps in the numbering are tolerated.
-- If no TO recipients are configured, the app throws before sending.
+- Addresses are trimmed and empty entries are ignored when splitting on `;`.
+- If the procedure returns no rows for a module, the report's send step fails.
+- If a report has no TO recipients, the app throws before sending.
 
 ## Message content
 

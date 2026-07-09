@@ -3,23 +3,9 @@ import nodemailer from "nodemailer";
 import { basename } from "@std/path";
 import { requireEnv } from "./config.ts";
 import { logger } from "./logger.ts";
+import type { EmailRecipients } from "./types.ts";
 
 export type ReportCode = "COH" | "CDD";
-
-/**
- * Collects indexed env vars like `${prefix}_0`, `${prefix}_1`, ... into a list.
- * Scans up to `max` indices and keeps every non-empty value, tolerating gaps.
- */
-function collectIndexed(prefix: string, max = 100): string[] {
-  const values: string[] = [];
-  for (let i = 0; i < max; i++) {
-    const value = Deno.env.get(`${prefix}_${i}`)?.trim();
-    if (value) {
-      values.push(value);
-    }
-  }
-  return values;
-}
 
 /**
  * Builds an SMTP transport from the SMTP_* env vars. Port 465 uses implicit TLS;
@@ -47,8 +33,10 @@ function buildMessage(code: ReportCode, date: string): {
   subject: string;
   text: string;
 } {
+  const isProduction = Deno.env.get("IS_PRODUCTION") === "true";
+  const prefix = isProduction ? "" : "[TEST] - ";
   return {
-    subject: `[TEST] - ${code} ${date}`,
+    subject: `${prefix}${code} ${date}`,
     text: `Note: This is a notification email from Eterminal, please do not reply.` +
       `\n\n \n\nPlease see ${code} as of ${date}.`,
   };
@@ -56,27 +44,28 @@ function buildMessage(code: ReportCode, date: string): {
 
 /**
  * Sends one report email (COH or CDD) with the CSV file attached, to the
- * recipients in SMTP_RECIPIENTS_* (and SMTP_CC_RECIPIENTS_*). Throws on SMTP
- * failure so the caller can fail the run.
+ * recipients resolved from the database (TO/CC/BCC). Throws on SMTP failure or
+ * when there are no TO recipients so the caller can fail the run.
  */
 export async function sendReportEmail(
   code: ReportCode,
   date: string,
   attachmentPath: string,
+  recipients: EmailRecipients,
 ): Promise<void> {
-  const to = collectIndexed("SMTP_RECIPIENTS");
+  const { to, cc, bcc } = recipients;
   if (to.length === 0) {
     throw new Error(
-      "No email recipients configured (set SMTP_RECIPIENTS_0, SMTP_RECIPIENTS_1, ...).",
+      `EmailTo field is empty for NotificationModule "${code} Report" — no recipients to send to.`,
     );
   }
-  const cc = collectIndexed("SMTP_CC_RECIPIENTS");
   const from = requireEnv("SMTP_FROM_EMAIL");
   const { subject, text } = buildMessage(code, date);
 
   logger.info(
     `Sending "${subject}" to ${to.length} recipient(s)` +
-      (cc.length ? ` (cc ${cc.length})` : "") + " ...",
+      (cc.length ? ` (cc ${cc.length})` : "") +
+      (bcc.length ? ` (bcc ${bcc.length})` : "") + " ...",
   );
 
   const transport = createTransport();
@@ -85,6 +74,7 @@ export async function sendReportEmail(
       from,
       to,
       cc: cc.length ? cc : undefined,
+      bcc: bcc.length ? bcc : undefined,
       subject,
       text,
       attachments: [{ filename: basename(attachmentPath), path: attachmentPath }],

@@ -35,6 +35,14 @@ export interface CashDeliveryDepositPerBank {
   depositUSD: number;
 }
 
+export type NotificationModule = "COH Report" | "CDD Report";
+
+export interface EmailRecipients {
+  to: string[];
+  cc: string[];
+  bcc: string[];
+}
+
 export interface WorkbookConfig {
   filePath: string;
   sheets: SheetConfig[];

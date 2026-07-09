@@ -32,13 +32,11 @@ Behavior:
 Optional:
 
 - `SMTP_ENABLE_SSL` - when `true` and the port is not `465`, Nodemailer requires STARTTLS
-- `SMTP_RECIPIENTS_0`, `SMTP_RECIPIENTS_1`, ... - TO recipients
-- `SMTP_CC_RECIPIENTS_0`, `SMTP_CC_RECIPIENTS_1`, ... - CC recipients
 
 Behavior:
 
-- Recipient lists are read from numbered variables and can have gaps.
-- If there are no TO recipients, the send step fails.
+- Recipients are fetched from the database (see [Email Delivery](./email-delivery.md)), not from environment variables.
+- If a report has no TO recipients, the send step fails.
 - Port `465` uses implicit TLS.
 
 ## Output directories
@@ -64,9 +62,6 @@ SMTP_ENABLE_SSL=true
 SMTP_USERNAME=smtp-user
 SMTP_PASSWORD=smtp-secret
 SMTP_FROM_EMAIL=reports@example.com
-SMTP_RECIPIENTS_0=person1@example.com
-SMTP_RECIPIENTS_1=person2@example.com
-SMTP_CC_RECIPIENTS_0=teamlead@example.com
 
 LOG_DIR=logs
 REPORTS_DIR=reports

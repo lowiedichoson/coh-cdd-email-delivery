@@ -4,6 +4,7 @@ import {
   dateStamp,
   displayDate,
   parseCliArgs,
+  printHelp,
   resolveDir,
 } from "./paths.ts";
 import { logger, printSummary, writeLogs } from "./logger.ts";
@@ -13,6 +14,7 @@ import {
   getCashDeliveryDepositData,
   getCashDeliveryDepositPerBankData,
   getCashOnHandData,
+  getRecipients,
   testConnection,
 } from "./db.ts";
 import { sendReportEmail } from "./mailer.ts";
@@ -68,7 +70,13 @@ async function processDay(
         }],
       });
       result.filesWritten++;
-      await sendReportEmail("COH", reportDate, cohPath);
+      const cohRecipients = await getRecipients(pool, "COH Report");
+      if (!cohRecipients) {
+        throw new Error(
+          'No recipient row found in database for NotificationModule "COH Report".',
+        );
+      }
+      await sendReportEmail("COH", reportDate, cohPath, cohRecipients);
       result.emailsSent++;
     }
   } catch (err) {
@@ -107,7 +115,13 @@ async function processDay(
         ],
       });
       result.filesWritten++;
-      await sendReportEmail("CDD", reportDate, cddPath);
+      const cddRecipients = await getRecipients(pool, "CDD Report");
+      if (!cddRecipients) {
+        throw new Error(
+          'No recipient row found in database for NotificationModule "CDD Report".',
+        );
+      }
+      await sendReportEmail("CDD", reportDate, cddPath, cddRecipients);
       result.emailsSent++;
     }
   } catch (err) {
@@ -136,6 +150,10 @@ if (import.meta.main) {
   const today = dateStamp(); // run date — used for the log filename
 
   const cliArgs = parseCliArgs();
+  if (cliArgs.help) {
+    printHelp();
+    Deno.exit(0);
+  }
   const runDates = cliArgs.dates; // [] = default mode (one iteration, no TransactionDate)
   let logDir = resolveDir("LOG_DIR", "logs");
   let pool: sql.ConnectionPool | undefined;

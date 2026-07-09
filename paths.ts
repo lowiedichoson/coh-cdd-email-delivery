@@ -66,6 +66,43 @@ export interface CliArgs {
    * TransactionDate passed to the stored procedures (they default internally).
    */
   dates: Date[];
+  /** True when the user requested the help text (`-h` / `--help`). */
+  help?: boolean;
+}
+
+/** Prints CLI usage/help text to stdout. */
+export function printHelp(): void {
+  const name = "coh-cdd-email-delivery";
+  console.log(
+    [
+      `${name} — generate and email the daily COH and CDD reports.`,
+      "",
+      "USAGE:",
+      "  deno task dev -- [options]",
+      `  ${name}.exe [options]`,
+      "",
+      "OPTIONS:",
+      "  -h, --help                 Show this help and exit.",
+      "  -d, --date <YYYY-MM-DD>    Process a single day.",
+      "  --date-from <YYYY-MM-DD>   Start of a date range (through yesterday if",
+      "                             --date-to is omitted).",
+      "  --date-to <YYYY-MM-DD>     End of a date range (requires --date-from).",
+      "",
+      "  With no options, the app runs once for the default date (the stored",
+      "  procedures use their own internal default date).",
+      "",
+      "NOTES:",
+      "  - Dates must be in YYYY-MM-DD format (e.g. 2026-06-14).",
+      "  - --date cannot be combined with --date-from / --date-to.",
+      "  - --date-from must not be after --date-to.",
+      "",
+      "EXAMPLES:",
+      "  deno task dev -- --help",
+      "  deno task dev -- --date 2026-06-14",
+      "  deno task dev -- --date-from 2026-06-01",
+      "  deno task dev -- --date-from 2026-06-01 --date-to 2026-06-03",
+    ].join("\n"),
+  );
 }
 
 /** Validates a YYYY-MM-DD string and returns a Date at midnight local time. */
@@ -129,6 +166,10 @@ export function parseCliArgs(): CliArgs {
   let singleDate: Date | undefined;
   let dateFrom: Date | undefined;
   let dateTo: Date | undefined;
+
+  if (args.includes("-h") || args.includes("--help")) {
+    return { dates: [], help: true };
+  }
 
   for (let i = 0; i < args.length; i++) {
     if ((args[i] === "-d" || args[i] === "--date") && i + 1 < args.length) {

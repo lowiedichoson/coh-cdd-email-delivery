@@ -2,7 +2,7 @@ import sql from "mssql";
 import chalk from "chalk";
 import { logger } from "./logger.ts";
 import { buildConfig } from "./config.ts";
-import { CashDeliveryDeposit, CashDeliveryDepositPerBank, CashOnHand } from "./types.ts";
+import { CashDeliveryDeposit, CashDeliveryDepositPerBank, CashOnHand, EmailRecipients, NotificationModule } from "./types.ts";
 
 export async function createPool(): Promise<sql.ConnectionPool> {
   const config = buildConfig();
@@ -150,4 +150,40 @@ export async function getCashDeliveryDepositPerBankData(
     `Cash Delivery Deposit Per Bank data retrieved successfully (${data.length} rows).`,
   );
   return data;
+}
+
+export async function getRecipients(
+  pool: sql.ConnectionPool,
+  notificationModule: NotificationModule,
+): Promise<EmailRecipients | undefined> {
+  const sp = "spGetEmailRecipients";
+
+  logger.info(`Retrieving email recipients for "${notificationModule}" from the database...`);
+
+  const req = pool.request();
+  req.input("NotificationModule", sql.NVarChar, notificationModule);
+  const result = await req.execute<Record<string, unknown>>(sp);
+
+  if (result.recordset.length === 0) {
+    logger.warn(`No email recipients returned for "${notificationModule}".`);
+    return;
+  }
+
+  const splitEmails = (value: unknown): string[] =>
+    String(value ?? "")
+      .split(";")
+      .map((email) => email.trim())
+      .filter((email) => email.length > 0);
+
+  const row = result.recordset[0];
+  const recipients: EmailRecipients = {
+    to: splitEmails(row["EmailTo"]),
+    cc: splitEmails(row["EmailCC"]),
+    bcc: splitEmails(row["EmailBCC"]),
+  };
+
+  logger.success(
+    `Email recipients retrieved successfully (to: ${recipients.to.length}, cc: ${recipients.cc.length}, bcc: ${recipients.bcc.length}).`,
+  );
+  return recipients;
 }
