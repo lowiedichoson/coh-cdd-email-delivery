@@ -3,6 +3,15 @@
 This app is designed to be compiled into a standalone Windows executable with
 Deno.
 
+## Build
+
+```sh
+deno task compile
+```
+
+This produces `coh-cdd-email-delivery.exe` in the project root, bundling all
+TypeScript source, pure-JS npm dependencies, and the Deno runtime.
+
 ## Expected runtime layout
 
 Place these items beside the executable:
@@ -36,7 +45,7 @@ rest.
 
 - Confirm the `.env` file contains all required SQL and SMTP variables.
 - Confirm the output directories are writable.
-- Confirm the database account can execute both stored procedures.
+- Confirm the database account can execute all four stored procedures.
 - Confirm the SMTP relay allows the configured sender and recipients.
 
 ## Rollback

@@ -15,21 +15,26 @@ There are ignored integration tests for the database helpers:
 
 - `getCashOnHandData()`
 - `getCashDeliveryDepositData()`
+- `getCashDeliveryDepositPerBankData()`
 
 These are currently ignored because they require a live database and the actual
 stored procedures.
 
 ## What is not tested yet
 
-- CSV output formatting
+- Workbook (Excel/xlsx) generation
 - SMTP sending behavior
 - log file content
 - path resolution
+- CLI argument parsing
 - the full end-to-end `main.ts` orchestration
 
 ## Running tests
 
-Use the Deno test command with the permissions required by the code under test.
+```sh
+deno task test
+```
+
 For the current unit tests, environment access is required.
 
 If you enable the integration tests later, you will also need network access and

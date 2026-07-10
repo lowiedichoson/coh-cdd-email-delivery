@@ -21,7 +21,7 @@ Behavior:
 - Missing required values throw immediately during config building.
 - `DB_PORT` is converted to a number.
 - `trustServerCertificate` is always set to `true` in the current code.
-- `connectionTimeout` is `10_000` ms.
+- `connectionTimeout` is `60_000` ms.
 
 ## Required SMTP settings
 
@@ -33,8 +33,10 @@ Behavior:
 
 Optional:
 
-- `SMTP_ENABLE_SSL` - when `true` and the port is not `465`, Nodemailer requires
-  STARTTLS
+- `SMTP_ENABLE_SSL` - when `true` and the port is not `465`, Nodemailer
+  enables STARTTLS
+- `IS_PRODUCTION` - when `"true"`, the email subject omits the `[TEST] -`
+  prefix
 
 Behavior:
 
@@ -54,6 +56,10 @@ is supplied.
 ## Example `.env`
 
 ```env
+# General
+IS_PRODUCTION=false
+
+# SQL Server
 DB_HOST=sqlserver01
 DB_PORT=1433
 DB_USER=report_user
@@ -61,6 +67,7 @@ DB_PASSWORD=secret
 DB_NAME=Finance
 DB_ENCRYPT=false
 
+# SMTP relay
 SMTP_HOST=smtp.example.com
 SMTP_PORT=587
 SMTP_ENABLE_SSL=true
@@ -68,6 +75,7 @@ SMTP_USERNAME=smtp-user
 SMTP_PASSWORD=smtp-secret
 SMTP_FROM_EMAIL=reports@example.com
 
+# Output directories
 LOG_DIR=logs
 REPORTS_DIR=reports
 ```

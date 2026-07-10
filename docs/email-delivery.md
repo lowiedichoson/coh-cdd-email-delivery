@@ -38,9 +38,11 @@ Notes:
 
 ## Message content
 
-- Subject format: `COH YYYY-MM-DD` or `CDD YYYY-MM-DD`
-- Body text: fixed legacy-style notification text with the report code and date
-- Attachment filename: the saved CSV file name
+- Subject format: `[TEST] - COH YYYY-MM-DD` or `[TEST] - CDD YYYY-MM-DD` when
+  `IS_PRODUCTION` is not `"true"`. In production (`IS_PRODUCTION=true`) the
+  `[TEST] -` prefix is omitted.
+- Body text: fixed legacy-style notification text with the report code and date.
+- Attachment: the generated Excel (.xlsx) workbook file.
 
 ## Failure behavior
 

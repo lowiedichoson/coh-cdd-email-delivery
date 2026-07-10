@@ -35,13 +35,15 @@ Each log entry contains:
 
 At the end of the run, the app prints a compact recap showing:
 
-- elapsed time
+- elapsed time (single-day mode) or succeeded/total days (date-range mode)
 - COH row count
 - CDD row count
+- CDD Per Bank row count
 - number of files written
 - number of emails sent
 - success or failure status
 - log path
+- per-day details (COH/CDD/CDD-B rows or error message)
 
 ## Operational use
 

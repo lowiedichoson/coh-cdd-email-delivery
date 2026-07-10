@@ -33,7 +33,7 @@ Fix: verify `DB_*` values and test connectivity from the same host.
 
 ## Empty report output
 
-Symptom: no CSV file is written and no email is sent for a report.
+Symptom: no workbook file is written and no email is sent for a report.
 
 Cause: the stored procedure returned zero rows.
 
