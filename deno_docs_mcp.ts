@@ -32,7 +32,9 @@ async function fetchIndex(): Promise<string> {
   }
   const res = await fetch(LLMS_TXT_URL);
   if (!res.ok) {
-    throw new Error(`Failed to fetch ${LLMS_TXT_URL}: ${res.status} ${res.statusText}`);
+    throw new Error(
+      `Failed to fetch ${LLMS_TXT_URL}: ${res.status} ${res.statusText}`,
+    );
   }
   const text = await res.text();
   cache = { text, at: Date.now() };
@@ -68,7 +70,9 @@ server.registerTool(
       "(e.g. 'permissions', 'http server', 'kv'). Returns the matching link lines, " +
       "each with the section it belongs to.",
     inputSchema: {
-      query: z.string().min(1).describe("Keyword or topic to search for, case-insensitive."),
+      query: z.string().min(1).describe(
+        "Keyword or topic to search for, case-insensitive.",
+      ),
     },
   },
   async ({ query }: { query: string }) => {
@@ -88,7 +92,9 @@ server.registerTool(
       // Match list-item links: "- [title](url): description"
       const isLink = /^\s*[-*]\s*\[/.test(line);
       if (isLink && line.toLowerCase().includes(needle)) {
-        matches.push(currentSection ? `[${currentSection}] ${line.trim()}` : line.trim());
+        matches.push(
+          currentSection ? `[${currentSection}] ${line.trim()}` : line.trim(),
+        );
       }
     }
 
@@ -107,7 +113,9 @@ server.registerTool(
       "Fetch a specific Deno documentation page by URL (must be on docs.deno.com, " +
       "e.g. a link returned by list_docs/search_docs) and return its content.",
     inputSchema: {
-      url: z.string().url().describe("Full https://docs.deno.com/... URL of the page to fetch."),
+      url: z.string().url().describe(
+        "Full https://docs.deno.com/... URL of the page to fetch.",
+      ),
     },
   },
   async ({ url }: { url: string }) => {
@@ -125,7 +133,8 @@ server.registerTool(
         isError: true,
         content: [{
           type: "text",
-          text: `Refused: only ${DOCS_HOST} URLs are allowed (got ${parsed.hostname}).`,
+          text:
+            `Refused: only ${DOCS_HOST} URLs are allowed (got ${parsed.hostname}).`,
         }],
       };
     }
@@ -134,7 +143,11 @@ server.registerTool(
     if (!res.ok) {
       return {
         isError: true,
-        content: [{ type: "text", text: `Failed to fetch ${parsed.href}: ${res.status} ${res.statusText}` }],
+        content: [{
+          type: "text",
+          text:
+            `Failed to fetch ${parsed.href}: ${res.status} ${res.statusText}`,
+        }],
       };
     }
     const text = await res.text();

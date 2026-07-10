@@ -1,6 +1,8 @@
 # Configuration
 
-Configuration comes from environment variables. The app prefers a `.env` file beside the executable, but it will also work if the variables are injected directly into the process environment.
+Configuration comes from environment variables. The app prefers a `.env` file
+beside the executable, but it will also work if the variables are injected
+directly into the process environment.
 
 ## Required SQL settings
 
@@ -31,11 +33,13 @@ Behavior:
 
 Optional:
 
-- `SMTP_ENABLE_SSL` - when `true` and the port is not `465`, Nodemailer requires STARTTLS
+- `SMTP_ENABLE_SSL` - when `true` and the port is not `465`, Nodemailer requires
+  STARTTLS
 
 Behavior:
 
-- Recipients are fetched from the database (see [Email Delivery](./email-delivery.md)), not from environment variables.
+- Recipients are fetched from the database (see
+  [Email Delivery](./email-delivery.md)), not from environment variables.
 - If a report has no TO recipients, the send step fails.
 - Port `465` uses implicit TLS.
 
@@ -44,7 +48,8 @@ Behavior:
 - `LOG_DIR` - defaults to `logs`
 - `REPORTS_DIR` - defaults to `reports`
 
-Both are resolved relative to the executable directory unless an absolute path is supplied.
+Both are resolved relative to the executable directory unless an absolute path
+is supplied.
 
 ## Example `.env`
 

@@ -27,8 +27,8 @@ Recipients come from the database, not from environment variables. The
 - COH report: `NotificationModule = "COH Report"`
 - CDD report: `NotificationModule = "CDD Report"`
 
-Each active row returns `EmailTo`, `EmailCC`, and `EmailBCC`, where each value is
-a semicolon-separated (`;`) list of email addresses.
+Each active row returns `EmailTo`, `EmailCC`, and `EmailBCC`, where each value
+is a semicolon-separated (`;`) list of email addresses.
 
 Notes:
 

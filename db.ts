@@ -2,7 +2,13 @@ import sql from "mssql";
 import chalk from "chalk";
 import { logger } from "./logger.ts";
 import { buildConfig } from "./config.ts";
-import { CashDeliveryDeposit, CashDeliveryDepositPerBank, CashOnHand, EmailRecipients, NotificationModule } from "./types.ts";
+import {
+  CashDeliveryDeposit,
+  CashDeliveryDepositPerBank,
+  CashOnHand,
+  EmailRecipients,
+  NotificationModule,
+} from "./types.ts";
 
 export async function createPool(): Promise<sql.ConnectionPool> {
   const config = buildConfig();
@@ -64,7 +70,9 @@ export async function getCashOnHandData(
     return;
   }
 
-  const data: CashOnHand[] = result.recordset.map((row: Record<string, unknown>) => ({
+  const data: CashOnHand[] = result.recordset.map((
+    row: Record<string, unknown>,
+  ) => ({
     branchName: String(row["Branch Name"] ?? ""),
     cashOnHandPHP: Number(row["COH PHP"]) || 0,
     cashOnHandUSD: Number(row["COH USD"]) || 0,
@@ -97,8 +105,10 @@ export async function getCashDeliveryDepositData(
     logger.warn("No Cash Delivery Deposit data returned from the database.");
     return;
   }
-  
-  const data: CashDeliveryDeposit[] = result.recordset.map((row: Record<string, unknown>) => ({
+
+  const data: CashDeliveryDeposit[] = result.recordset.map((
+    row: Record<string, unknown>,
+  ) => ({
     branchName: String(row["Branch Name"] ?? ""),
     deliveryPHP: Number(row["Delivery PHP"]) || 0,
     deliveryUSD: Number(row["Delivery USD"]) || 0,
@@ -138,7 +148,9 @@ export async function getCashDeliveryDepositPerBankData(
     return;
   }
 
-  const data: CashDeliveryDepositPerBank[] = result.recordset.map((row: Record<string, unknown>) => ({
+  const data: CashDeliveryDepositPerBank[] = result.recordset.map((
+    row: Record<string, unknown>,
+  ) => ({
     bankCode: String(row["Bank Code"] ?? ""),
     deliveryPHP: Number(row["Delivery PHP"]) || 0,
     deliveryUSD: Number(row["Delivery USD"]) || 0,
@@ -158,7 +170,9 @@ export async function getRecipients(
 ): Promise<EmailRecipients | undefined> {
   const sp = "spGetEmailRecipients";
 
-  logger.info(`Retrieving email recipients for "${notificationModule}" from the database...`);
+  logger.info(
+    `Retrieving email recipients for "${notificationModule}" from the database...`,
+  );
 
   const req = pool.request();
   req.input("NotificationModule", sql.NVarChar, notificationModule);

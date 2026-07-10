@@ -207,7 +207,9 @@ export function parseCliArgs(): CliArgs {
     const to = dateTo ?? yesterday();
     if (dateFrom > to) {
       throw new Error(
-        `--date-from (${dateStamp(dateFrom)}) must not be after --date-to (${dateStamp(to)}).`,
+        `--date-from (${dateStamp(dateFrom)}) must not be after --date-to (${
+          dateStamp(to)
+        }).`,
       );
     }
     return { dates: dateRange(dateFrom, to) };

@@ -11,7 +11,10 @@ import {
  * the originals — so tests don't leak state into each other or into the real
  * .env values loaded at import time.
  */
-function withEnv(overrides: Record<string, string | undefined>, body: () => void) {
+function withEnv(
+  overrides: Record<string, string | undefined>,
+  body: () => void,
+) {
   const keys = Object.keys(overrides);
   const original = new Map(keys.map((k) => [k, Deno.env.get(k)]));
   try {

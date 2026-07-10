@@ -19,7 +19,12 @@ import {
 } from "./db.ts";
 import { sendReportEmail } from "./mailer.ts";
 import { generateWorkbook } from "./report.ts";
-import type { CashDeliveryDeposit, CashDeliveryDepositPerBank, CashOnHand, DayResult } from "./types.ts";
+import type {
+  CashDeliveryDeposit,
+  CashDeliveryDepositPerBank,
+  CashOnHand,
+  DayResult,
+} from "./types.ts";
 
 // ── Per-day processing ────────────────────────────────────────────────────
 
@@ -33,9 +38,7 @@ async function processDay(
   reportsDir: string,
   transactionDate: Date | undefined,
 ): Promise<DayResult> {
-  const reportDate = transactionDate
-    ? dateStamp(transactionDate)
-    : dateStamp(); // default: today — the SP defaults to CAST(GETDATE() AS DATE)
+  const reportDate = transactionDate ? dateStamp(transactionDate) : dateStamp(); // default: today — the SP defaults to CAST(GETDATE() AS DATE)
   const result: DayResult = {
     date: reportDate,
     success: true,
@@ -222,7 +225,13 @@ if (import.meta.main) {
         filesWritten: acc.filesWritten + d.filesWritten,
         emailsSent: acc.emailsSent + d.emailsSent,
       }),
-      { cohRows: 0, cddRows: 0, cddPerBankRows: 0, filesWritten: 0, emailsSent: 0 },
+      {
+        cohRows: 0,
+        cddRows: 0,
+        cddPerBankRows: 0,
+        filesWritten: 0,
+        emailsSent: 0,
+      },
     );
 
     const failedDays = dayResults.filter((d) => !d.success);

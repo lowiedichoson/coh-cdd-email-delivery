@@ -110,19 +110,22 @@ export function printSummary(s: RunSummary): void {
 
   // Multi-day header
   if (s.dayResults.length > 0) {
-    const daysTag =
-      s.daysSucceeded === s.daysTotal
-        ? chalk.green(`${s.daysSucceeded}/${s.daysTotal}`)
-        : chalk.red(`${s.daysSucceeded}/${s.daysTotal}`);
+    const daysTag = s.daysSucceeded === s.daysTotal
+      ? chalk.green(`${s.daysSucceeded}/${s.daysTotal}`)
+      : chalk.red(`${s.daysSucceeded}/${s.daysTotal}`);
     console.log(
       `  Days: ${daysTag} succeeded  ${bar}  ` +
-        `COH ${chalk.cyan(s.cohRows)}  CDD ${chalk.cyan(s.cddRows)}  CDD-B ${chalk.cyan(s.cddPerBankRows)}  ${bar}  ` +
+        `COH ${chalk.cyan(s.cohRows)}  CDD ${chalk.cyan(s.cddRows)}  CDD-B ${
+          chalk.cyan(s.cddPerBankRows)
+        }  ${bar}  ` +
         `${files}  ${bar}  ${emails}`,
     );
   } else {
     console.log(
       `  Done in ${chalk.cyan(`${elapsed}s`)}  ${bar}  ` +
-        `COH ${chalk.cyan(s.cohRows)}  CDD ${chalk.cyan(s.cddRows)}  CDD-B ${chalk.cyan(s.cddPerBankRows)}  ${bar}  ` +
+        `COH ${chalk.cyan(s.cohRows)}  CDD ${chalk.cyan(s.cddRows)}  CDD-B ${
+          chalk.cyan(s.cddPerBankRows)
+        }  ${bar}  ` +
         `${files}  ${bar}  ${emails}`,
     );
   }

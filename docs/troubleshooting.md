@@ -4,15 +4,18 @@
 
 Symptom: startup fails with `Missing required environment variable: ...`
 
-Cause: the `.env` file is missing a required key, or the process environment does not provide it.
+Cause: the `.env` file is missing a required key, or the process environment
+does not provide it.
 
 Fix: add the key to `.env` or the host environment and rerun.
 
 ## No `.env` file found
 
-Symptom: a warning says `.env` was not found and the app falls back to the process environment.
+Symptom: a warning says `.env` was not found and the app falls back to the
+process environment.
 
-Cause: the file is not beside the executable, or the app is being run from a location that does not contain it.
+Cause: the file is not beside the executable, or the app is being run from a
+location that does not contain it.
 
 Fix: place `.env` next to the executable or set the variables another way.
 
@@ -53,6 +56,8 @@ Fix: check the SMTP settings and relay policy.
 
 Symptom: files are written to an unexpected location.
 
-Cause: the app resolves relative paths from the executable directory, not the current shell directory.
+Cause: the app resolves relative paths from the executable directory, not the
+current shell directory.
 
-Fix: inspect the executable folder and confirm `LOG_DIR` / `REPORTS_DIR` if custom paths are used.
+Fix: inspect the executable folder and confirm `LOG_DIR` / `REPORTS_DIR` if
+custom paths are used.

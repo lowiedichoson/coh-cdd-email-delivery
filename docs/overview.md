@@ -1,11 +1,13 @@
 # Overview
 
-This application is a one-shot console job for generating and emailing two daily reports:
+This application is a one-shot console job for generating and emailing two daily
+reports:
 
 - Cash on Hand, sourced from `GetCOHEndingBalance`
 - Cash Delivery Deposit, sourced from `GetCDDBalance`
 
-It is designed to run non-interactively, usually from Windows Task Scheduler or SQL Agent, and then exit with a success or failure code.
+It is designed to run non-interactively, usually from Windows Task Scheduler or
+SQL Agent, and then exit with a success or failure code.
 
 ## Intended behavior
 

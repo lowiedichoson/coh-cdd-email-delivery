@@ -9,9 +9,11 @@ This is the exact high-level sequence executed by `main.ts`.
 3. Compute the prior calendar day for report filenames and email content.
 4. Resolve the log directory.
 5. Load `.env` if present.
-6. Re-resolve the log and report directories after environment variables are loaded.
+6. Re-resolve the log and report directories after environment variables are
+   loaded.
 7. Open the SQL connection pool.
-8. Verify the connection with a small `SELECT @@VERSION, DB_NAME(), SUSER_SNAME()` query.
+8. Verify the connection with a small
+   `SELECT @@VERSION, DB_NAME(), SUSER_SNAME()` query.
 9. Execute `GetCOHEndingBalance`.
 10. Execute `GetCDDBalance`.
 11. Convert both datasets to CSV.
@@ -30,8 +32,11 @@ This is the exact high-level sequence executed by `main.ts`.
 
 - Success uses exit code `0`.
 - Any exception sets the exit code to `1`.
-- The final `finally` block always runs, so the pool is closed and the log summary is attempted even after failure.
+- The final `finally` block always runs, so the pool is closed and the log
+  summary is attempted even after failure.
 
 ## Empty-data behavior
 
-If a stored procedure returns no rows, CSV conversion logs a warning and returns an empty string. In that case the app does not write a file or send an email for that report.
+If a stored procedure returns no rows, CSV conversion logs a warning and returns
+an empty string. In that case the app does not write a file or send an email for
+that report.

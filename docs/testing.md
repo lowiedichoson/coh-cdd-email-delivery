@@ -1,6 +1,7 @@
 # Testing
 
-The test suite in [main_test.ts](../main_test.ts) focuses on configuration and database helper behavior.
+The test suite in [main_test.ts](../main_test.ts) focuses on configuration and
+database helper behavior.
 
 ## Covered by tests
 
@@ -15,7 +16,8 @@ There are ignored integration tests for the database helpers:
 - `getCashOnHandData()`
 - `getCashDeliveryDepositData()`
 
-These are currently ignored because they require a live database and the actual stored procedures.
+These are currently ignored because they require a live database and the actual
+stored procedures.
 
 ## What is not tested yet
 
@@ -27,6 +29,8 @@ These are currently ignored because they require a live database and the actual 
 
 ## Running tests
 
-Use the Deno test command with the permissions required by the code under test. For the current unit tests, environment access is required.
+Use the Deno test command with the permissions required by the code under test.
+For the current unit tests, environment access is required.
 
-If you enable the integration tests later, you will also need network access and the real database permissions.
+If you enable the integration tests later, you will also need network access and
+the real database permissions.

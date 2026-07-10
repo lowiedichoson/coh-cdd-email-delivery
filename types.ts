@@ -51,7 +51,11 @@ export interface WorkbookConfig {
 export interface SheetConfig {
   tabName: string;
   title: string;
-  data: CashOnHand[] | CashDeliveryDeposit[] | CashDeliveryDepositPerBank[] | undefined;
+  data:
+    | CashOnHand[]
+    | CashDeliveryDeposit[]
+    | CashDeliveryDepositPerBank[]
+    | undefined;
   /** 0-based column indices whose values should be summed in a "Total" row. */
   totalColumns?: number[];
 }

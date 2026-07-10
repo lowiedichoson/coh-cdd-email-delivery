@@ -37,7 +37,8 @@ function buildMessage(code: ReportCode, date: string): {
   const prefix = isProduction ? "" : "[TEST] - ";
   return {
     subject: `${prefix}${code} ${date}`,
-    text: `Note: This is a notification email from Eterminal, please do not reply.` +
+    text:
+      `Note: This is a notification email from Eterminal, please do not reply.` +
       `\n\n \n\nPlease see ${code} as of ${date}.`,
   };
 }
@@ -77,7 +78,10 @@ export async function sendReportEmail(
       bcc: bcc.length ? bcc : undefined,
       subject,
       text,
-      attachments: [{ filename: basename(attachmentPath), path: attachmentPath }],
+      attachments: [{
+        filename: basename(attachmentPath),
+        path: attachmentPath,
+      }],
     });
   } finally {
     transport.close();

@@ -1,6 +1,8 @@
 # COH / CDD Email Delivery
 
-This directory documents the current Deno console application that pulls two SQL Server reports, converts them to CSV, saves them to disk, and emails each file as an attachment.
+This directory documents the current Deno console application that pulls two SQL
+Server reports, converts them to CSV, saves them to disk, and emails each file
+as an attachment.
 
 Start here:
 
@@ -18,7 +20,8 @@ Start here:
 
 ## What this app does
 
-- Loads environment variables from `.env` beside the executable, or uses the process environment if `.env` is missing.
+- Loads environment variables from `.env` beside the executable, or uses the
+  process environment if `.env` is missing.
 - Connects to Microsoft SQL Server using `mssql`.
 - Executes two stored procedures: `GetCOHEndingBalance` and `GetCDDBalance`.
 - Converts each result set to CSV.

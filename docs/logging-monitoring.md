@@ -20,7 +20,8 @@ Levels used by the app:
 ## File logging
 
 - Log files are written as `logs-YYYY-MM-DD.json`.
-- They are stored in the log directory, which defaults to `logs` beside the executable.
+- They are stored in the log directory, which defaults to `logs` beside the
+  executable.
 - Each run appends a new entry to the JSON array in that file.
 
 Each log entry contains:
@@ -46,6 +47,9 @@ At the end of the run, the app prints a compact recap showing:
 
 Use the log file and summary together:
 
-- If the app fails before reporting counts, look for the last `error` entry and the stack trace.
-- If the app succeeds but a report is missing, check whether the corresponding result set was empty.
-- If an email is missing, verify whether the file was written and whether the recipient variables are populated.
+- If the app fails before reporting counts, look for the last `error` entry and
+  the stack trace.
+- If the app succeeds but a report is missing, check whether the corresponding
+  result set was empty.
+- If an email is missing, verify whether the file was written and whether the
+  recipient variables are populated.

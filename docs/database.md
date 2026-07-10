@@ -12,7 +12,8 @@ The app uses SQL authentication with values from the environment.
 
 ## Connection verification
 
-After connecting, the app runs a simple identity query to confirm the session can execute commands:
+After connecting, the app runs a simple identity query to confirm the session
+can execute commands:
 
 ```sql
 SELECT @@VERSION AS version, DB_NAME() AS db, SUSER_SNAME() AS login
@@ -38,11 +39,13 @@ This is used for startup diagnostics, not report data.
 
 - An empty recordset logs a warning and returns `undefined`.
 - A non-empty recordset logs a success message with the row count.
-- The app does not currently transform column names or reorder fields in the DB layer; CSV generation uses the object keys from the first row.
+- The app does not currently transform column names or reorder fields in the DB
+  layer; CSV generation uses the object keys from the first row.
 
 ## Change impact
 
-If either stored procedure name, return shape, or result semantics change, update all of these documents together:
+If either stored procedure name, return shape, or result semantics change,
+update all of these documents together:
 
 - [Database](./database.md)
 - [Reporting](./reporting.md)
