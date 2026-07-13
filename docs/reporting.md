@@ -1,7 +1,7 @@
 # Reporting
 
-The app generates Excel (.xlsx) workbooks from SQL result sets using the
-`xlsx` (SheetJS) library.
+The app generates Excel (.xlsx) workbooks from SQL result sets using the `xlsx`
+(SheetJS) library.
 
 ## Report types
 

@@ -23,8 +23,8 @@ Start here:
 - Loads environment variables from `.env` beside the executable, or uses the
   process environment if `.env` is missing.
 - Connects to Microsoft SQL Server using `mssql`.
-- Executes three stored procedures: `spGetCOHEndingBalance`,
-  `spGetCDDBalance`, and `spGetCDDBalancePerBank`.
+- Executes three stored procedures: `spGetCOHEndingBalance`, `spGetCDDBalance`,
+  and `spGetCDDBalancePerBank`.
 - Looks up email recipients from `spGetEmailRecipients`.
 - Generates Excel (.xlsx) workbooks with formatted sheets and total rows.
 - Writes the workbook files to the reports directory.

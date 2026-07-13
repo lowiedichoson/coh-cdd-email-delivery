@@ -115,16 +115,16 @@ See the [docs/](./docs/) directory for detailed documentation:
 
 ## Dependencies
 
-| Package    | Source | Purpose              |
-|------------|--------|----------------------|
-| `mssql`    | npm    | SQL Server client    |
-| `nodemailer` | npm  | SMTP email client    |
-| `xlsx`     | npm    | Excel (.xlsx) generation |
-| `chalk`    | npm    | Colored console output |
-| `@std/dotenv` | JSR | `.env` file loading |
-| `@std/path`  | JSR | Path utilities     |
-| `@std/csv`   | JSR | CSV string conversion (supplementary) |
-| `zod`       | npm   | Schema validation (MCP server only) |
+| Package       | Source | Purpose                               |
+| ------------- | ------ | ------------------------------------- |
+| `mssql`       | npm    | SQL Server client                     |
+| `nodemailer`  | npm    | SMTP email client                     |
+| `xlsx`        | npm    | Excel (.xlsx) generation              |
+| `chalk`       | npm    | Colored console output                |
+| `@std/dotenv` | JSR    | `.env` file loading                   |
+| `@std/path`   | JSR    | Path utilities                        |
+| `@std/csv`    | JSR    | CSV string conversion (supplementary) |
+| `zod`         | npm    | Schema validation (MCP server only)   |
 
 All dependencies are pure JavaScript (no native addons) so they bundle into the
 compiled `.exe`.

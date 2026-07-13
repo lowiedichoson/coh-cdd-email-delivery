@@ -65,8 +65,7 @@ This is used for startup diagnostics, not report data.
 - A non-empty recordset logs a success message with the row count.
 - DB rows are mapped to typed TypeScript interfaces (`CashOnHand`,
   `CashDeliveryDeposit`, `CashDeliveryDepositPerBank`).
-- Column labels for the workbook are defined in `report.ts` via
-  `COLUMN_LABELS`.
+- Column labels for the workbook are defined in `report.ts` via `COLUMN_LABELS`.
 
 ## Change impact
 

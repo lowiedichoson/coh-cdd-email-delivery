@@ -41,8 +41,8 @@ This is the exact high-level sequence executed by `main.ts`.
 
 If a stored procedure returns no rows, the workbook generation logs a warning
 and returns without writing a file. In that case the app does not write a file
-or send an email for that report. If both COH and CDD return empty for a day,
-no file or email is produced for that day.
+or send an email for that report. If both COH and CDD return empty for a day, no
+file or email is produced for that day.
 
 ## Date-range behavior
 

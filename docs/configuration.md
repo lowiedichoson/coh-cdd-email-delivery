@@ -33,10 +33,9 @@ Behavior:
 
 Optional:
 
-- `SMTP_ENABLE_SSL` - when `true` and the port is not `465`, Nodemailer
-  enables STARTTLS
-- `IS_PRODUCTION` - when `"true"`, the email subject omits the `[TEST] -`
-  prefix
+- `SMTP_ENABLE_SSL` - when `true` and the port is not `465`, Nodemailer enables
+  STARTTLS
+- `IS_PRODUCTION` - when `"true"`, the email subject omits the `[TEST] -` prefix
 
 Behavior:
 

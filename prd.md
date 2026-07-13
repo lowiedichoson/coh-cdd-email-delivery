@@ -1,8 +1,8 @@
 # PRD — COH CDD Email Delivery
 
-**Status:** Implemented **Owner:** Lowie Dichoson **Last updated:**
-2026-06-03 **Replaces:** Legacy production .NET console app (no source code, no
-logging, no error handling)
+**Status:** Implemented **Owner:** Lowie Dichoson **Last updated:** 2026-06-03
+**Replaces:** Legacy production .NET console app (no source code, no logging, no
+error handling)
 
 ---
 
@@ -93,8 +93,8 @@ The result is a fragile, opaque job that the team cannot trust or maintain.
 - **FR-8** (done) It executes the same report stored procedures the current app
   uses: `spGetCOHEndingBalance`, `spGetCDDBalance`, and
   `spGetCDDBalancePerBank`.
-- **FR-9** (done) It executes `spGetEmailRecipients` to fetch the recipient
-  list per report module.
+- **FR-9** (done) It executes `spGetEmailRecipients` to fetch the recipient list
+  per report module.
 
 ### 5.4 File generation
 
@@ -120,10 +120,10 @@ The result is a fragile, opaque job that the team cannot trust or maintain.
 
 ### 5.7 Logging & error handling
 
-- **FR-18** (done) Every run writes to a dated JSON log file with timestamps
-  for each stage.
-- **FR-19** (done) All failures are caught as exceptions, logged with full
-  stack traces, and surfaced via the non-zero exit code.
+- **FR-18** (done) Every run writes to a dated JSON log file with timestamps for
+  each stage.
+- **FR-19** (done) All failures are caught as exceptions, logged with full stack
+  traces, and surfaced via the non-zero exit code.
 
 ---
 
@@ -140,15 +140,15 @@ The result is a fragile, opaque job that the team cannot trust or maintain.
 
 ## 7. Technical Implementation
 
-| Concern    | Choice                       | Why                                                                         |
-| ---------- | ---------------------------- | --------------------------------------------------------------------------- |
-| Runtime    | Deno 2.x                     | Native single-executable compile; modern TS; no separate runtime on server  |
-| Packaging  | `deno compile`               | Produces the standalone `.exe`                                              |
-| SQL Server | `npm:mssql` (tedious driver) | Mature; pure JS so it bundles into the exe                                  |
-| File (xlsx)| `npm:xlsx` (SheetJS)         | Pure JS; writes `.xlsx` with multi-sheet support                            |
-| Email      | `npm:nodemailer`             | Pure JS SMTP client                                                         |
-| Config     | `.env` (via `@std/dotenv`)   | Environment-agnostic; native Deno support                                   |
-| Logging    | `chalk` + JSON file          | Console colors + structured file output                                     |
+| Concern     | Choice                       | Why                                                                        |
+| ----------- | ---------------------------- | -------------------------------------------------------------------------- |
+| Runtime     | Deno 2.x                     | Native single-executable compile; modern TS; no separate runtime on server |
+| Packaging   | `deno compile`               | Produces the standalone `.exe`                                             |
+| SQL Server  | `npm:mssql` (tedious driver) | Mature; pure JS so it bundles into the exe                                 |
+| File (xlsx) | `npm:xlsx` (SheetJS)         | Pure JS; writes `.xlsx` with multi-sheet support                           |
+| Email       | `npm:nodemailer`             | Pure JS SMTP client                                                        |
+| Config      | `.env` (via `@std/dotenv`)   | Environment-agnostic; native Deno support                                  |
+| Logging     | `chalk` + JSON file          | Console colors + structured file output                                    |
 
 ### Actual run flow
 
@@ -156,8 +156,10 @@ The result is a fragile, opaque job that the team cannot trust or maintain.
 2. Parse CLI args (optional date or date range).
 3. Connect to SQL Server; verify connectivity.
 4. For each date:
-   - Execute `spGetCOHEndingBalance` → build COH .xlsx → lookup recipients → email.
-   - Execute `spGetCDDBalance` + `spGetCDDBalancePerBank` → build CDD .xlsx (two sheets) → lookup recipients → email.
+   - Execute `spGetCOHEndingBalance` → build COH .xlsx → lookup recipients →
+     email.
+   - Execute `spGetCDDBalance` + `spGetCDDBalancePerBank` → build CDD .xlsx (two
+     sheets) → lookup recipients → email.
 5. COH and CDD are independent — a failure in one does not block the other.
 6. Log outcome; exit `0` on success, `1` on failure.
 
@@ -165,20 +167,20 @@ The result is a fragile, opaque job that the team cannot trust or maintain.
 
 ## 8. What Was Built (vs. Planned)
 
-| Feature | Planned | Implemented |
-|---------|---------|-------------|
-| SQL Server connectivity | Yes | Yes |
-| CSV output | Yes | No — .xlsx instead |
-| Excel (.xlsx) output | No | Yes (multi-sheet) |
-| 2 stored procedures | Yes | 3 (COH, CDD, CDD Per Bank) |
-| Email delivery | Yes | Yes |
-| Recipients from DB | Yes | Yes |
-| Dated JSON logs | Yes | Yes |
-| Date range CLI | No | Yes (`--date-from`/`--date-to`) |
-| Per-report error isolation | No | Yes |
-| Retry with backoff | Yes | No |
-| Dedup ledger | Yes | No |
-| `.xls` (legacy BIFF) | TBD | No (`.xlsx` only) |
+| Feature                    | Planned | Implemented                     |
+| -------------------------- | ------- | ------------------------------- |
+| SQL Server connectivity    | Yes     | Yes                             |
+| CSV output                 | Yes     | No — .xlsx instead              |
+| Excel (.xlsx) output       | No      | Yes (multi-sheet)               |
+| 2 stored procedures        | Yes     | 3 (COH, CDD, CDD Per Bank)      |
+| Email delivery             | Yes     | Yes                             |
+| Recipients from DB         | Yes     | Yes                             |
+| Dated JSON logs            | Yes     | Yes                             |
+| Date range CLI             | No      | Yes (`--date-from`/`--date-to`) |
+| Per-report error isolation | No      | Yes                             |
+| Retry with backoff         | Yes     | No                              |
+| Dedup ledger               | Yes     | No                              |
+| `.xls` (legacy BIFF)       | TBD     | No (`.xlsx` only)               |
 
 ---
 
