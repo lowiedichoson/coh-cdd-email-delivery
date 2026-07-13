@@ -19,4 +19,6 @@ reports/*.csv
 reports/*.xlsx
 
 *.exe
-*.zip
+*.
+
+dist/
